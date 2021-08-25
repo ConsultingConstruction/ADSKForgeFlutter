@@ -1,6 +1,5 @@
 import 'package:adsk_forge_flutter/Router/appRouter.gr.dart';
 import 'package:flutter/material.dart';
-import 'views/views.dart' as views;
 
 void main() {
   runApp(MyApp());
