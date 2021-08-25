@@ -14,8 +14,10 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  // login model for user login
+  // Login model for user login
   LoginModel? login;
+
+  bool awaiting = false;
 
   // Login form controller
   final loginFormKey = GlobalKey<FormState>();
@@ -28,9 +30,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    // Login form node
-    final node = FocusScope.of(context);
-
     return Scaffold(
       body: Center(
         child: Padding(
@@ -72,6 +71,8 @@ class _LoginViewState extends State<LoginView> {
                         borderRadius: 10,
                         inputType: TextInputType.emailAddress,
                         inputAction: TextInputAction.next,
+                        requireValidation: true,
+                        customValidatorCallback: (_) => null,
                       ),
                     ),
                     // * Password input
@@ -94,13 +95,25 @@ class _LoginViewState extends State<LoginView> {
                         isObscureText: true,
                         inputType: TextInputType.visiblePassword,
                         inputAction: TextInputAction.done,
-                        onFieldSubmittedCallback: (String input) async {
-                          login = await LoginController.getLoginURL(
-                              emailTextController.text,
-                              passwordTextController.text);
-                        },
+                        requireValidation: true,
+                        customValidatorCallback: (_) => null,
                       ),
                     ),
+
+                    if (awaiting)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 50),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 500),
+                          child: LinearProgressIndicator(
+                            backgroundColor: Colors.grey,
+                            valueColor: AlwaysStoppedAnimation(
+                              Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    // * Buttons
                     ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: 500,
@@ -120,7 +133,11 @@ class _LoginViewState extends State<LoginView> {
                               labelText: 'Sign in',
                               borderRadius: 10,
                               height: 50,
-                              onPressedCallback: () {},
+                              onPressedCallback: () {
+                                if (loginFormKey.currentState!.validate())
+                                  loginCallback(emailTextController.text,
+                                      passwordTextController.text);
+                              },
                               onLongPressedCallback: () {},
                             ),
                             // * Register button
@@ -145,5 +162,21 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  // Callback function for login interaction
+  Future<void> loginCallback(String email, String password) async {
+    setState(() {
+      awaiting = true;
+    });
+    await LoginController.getLoginURL(email, password).then((response) {
+      login = response;
+      if (login?.statusCode == 0) {
+        context.pushRoute(RegisterViewRoute());
+      }
+    });
+    setState(() {
+      awaiting = false;
+    });
   }
 }
