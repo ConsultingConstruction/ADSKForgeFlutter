@@ -1,10 +1,15 @@
 import 'package:adsk_forge_flutter/API/forgeAPI.dart' as forgeAPI;
+import 'package:adsk_forge_flutter/classes/utils.dart';
 import 'package:adsk_forge_flutter/models/login_model.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 
+// Get the user login
 Future<LoginModel?> getLoginURL(String email, String password) async {
   Response? response;
+
+  // Generate MD5 from password
+  password = generateMD5(password);
 
   // Get general device info
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
