@@ -132,7 +132,10 @@ class InputFormComponent extends StatefulWidget {
   final bool requireValidation;
 
   /// The [validator] callback function of this component.
-  final String Function(String)? customValidatorCallback;
+  final String? Function(String)? customValidatorCallback;
+
+  /// The default empty input validator message of this component.
+  final String? isEmptyValidatorText;
 
   /// The [onChanged] callback function of this component.
   final void Function(String)? onChangedCallback;
@@ -191,6 +194,7 @@ class InputFormComponent extends StatefulWidget {
     required this.textController,
     this.requireValidation = false,
     this.customValidatorCallback,
+    this.isEmptyValidatorText = 'Required field',
     this.onChangedCallback,
     this.onEditingComplete,
     this.onFieldSubmittedCallback,
@@ -218,9 +222,11 @@ class _InputFormComponentState extends State<InputFormComponent> {
         right: widget.horizontalPadding ?? widget.rightPadding,
         bottom: widget.verticalPadding ?? widget.bottomPadding,
       ),
-      child: SizedBox(
-        width: widget.width,
-        height: widget.height,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: widget.width,
+          maxHeight: widget.height,
+        ),
         child: Center(
           child: TextFormField(
             controller: widget.textController,
@@ -366,7 +372,7 @@ class _InputFormComponentState extends State<InputFormComponent> {
             validator: (value) {
               if (widget.requireValidation) {
                 if (value!.isEmpty) {
-                  return 'Campo requerido';
+                  return widget.isEmptyValidatorText;
                 }
                 return widget.customValidatorCallback!(value);
               }
