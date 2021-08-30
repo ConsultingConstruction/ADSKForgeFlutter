@@ -23,6 +23,16 @@ class AppRouter extends _i1.RootStackRouter {
         routeData: routeData,
         builder: (_) {
           return const _i3.RegisterView();
+        }),
+    HubsViewRoute.name: (routeData) => _i1.AdaptivePage<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return const _i3.HubsView();
+        }),
+    AccountViewRoute.name: (routeData) => _i1.AdaptivePage<dynamic>(
+        routeData: routeData,
+        builder: (_) {
+          return const _i3.AccountView();
         })
   };
 
@@ -31,7 +41,9 @@ class AppRouter extends _i1.RootStackRouter {
         _i1.RouteConfig('/#redirect',
             path: '/', redirectTo: '/login', fullMatch: true),
         _i1.RouteConfig(LoginViewRoute.name, path: '/login'),
-        _i1.RouteConfig(RegisterViewRoute.name, path: '/register')
+        _i1.RouteConfig(RegisterViewRoute.name, path: '/register'),
+        _i1.RouteConfig(HubsViewRoute.name, path: '/hubs'),
+        _i1.RouteConfig(AccountViewRoute.name, path: '/account')
       ];
 }
 
@@ -45,4 +57,16 @@ class RegisterViewRoute extends _i1.PageRouteInfo {
   const RegisterViewRoute() : super(name, path: '/register');
 
   static const String name = 'RegisterViewRoute';
+}
+
+class HubsViewRoute extends _i1.PageRouteInfo {
+  const HubsViewRoute() : super(name, path: '/hubs');
+
+  static const String name = 'HubsViewRoute';
+}
+
+class AccountViewRoute extends _i1.PageRouteInfo {
+  const AccountViewRoute() : super(name, path: '/account');
+
+  static const String name = 'AccountViewRoute';
 }
